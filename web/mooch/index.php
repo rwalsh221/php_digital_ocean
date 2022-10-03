@@ -3,16 +3,14 @@
 echo 'hello mooch';
 
 class DatabaseSettings {
+    
+    private $servername;
+    private $databaseName;
+    private $username;
+    private $password;
+    private $port;
 
-
-
-    private $servername = 'localhost';
-    private $databaseName = 'mooch';
-    private $username = 'richardmsi';
-    private $password = 'Polly11@Polly11';
-    private $port = 80;
-
-    public function __construct() {
+    private function setDbVar() {
         if (getenv('DATABASE_URL')) {
 
             $servername = getenv('DATABASE_URL');
@@ -24,6 +22,12 @@ class DatabaseSettings {
             $this->dbname = substr($components['path'], 1);
             $this->port = $components['port'];
 
+        } else {
+            $this->servername = 'localhost';
+            $this->databaseName = 'mooch';
+            $this->username = 'richardmsi';
+            $this->password = 'Polly11@Polly11';
+            $this->port = 80;
         }
     }
 
@@ -84,6 +88,7 @@ class DatabaseSettings {
     }
 
     public function test() {
+        $this->setDbVar();
         echo $this->servername;
     }
 
