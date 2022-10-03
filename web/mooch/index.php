@@ -11,7 +11,7 @@ class DatabaseSettings {
     private $port;
 
     private function setDbVar() {
-        if (getenv('DATABASE_URL')) {
+        if (getenv('DATABASE_URL1')) {
 
             $servername = getenv('DATABASE_URL');
             $components = parse_url($servername);
