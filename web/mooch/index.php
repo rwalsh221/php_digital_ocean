@@ -17,10 +17,10 @@ class DatabaseSettings {
             $components = parse_url($servername);
             var_dump($components);
             
-            $this->host = $components['host'];
+            $this->servername = $components['host'];
             $this->username = $components['user'];
             $this->password = $components['pass'];
-            $this->dbname = substr($components['path'], 1);
+            $this->databaseName = substr($components['path'], 1);
             $this->port = $components['port'];
 
         } else {
