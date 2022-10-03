@@ -1,0 +1,17 @@
+{
+  "name": "ricardo/heroku_php_test",
+  "description": "test",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Richard Walsh",
+      "email": "richwalsh2@googlemail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0.0"
+  },
+  "config": {
+    "platform-check": false
+  }
+}
