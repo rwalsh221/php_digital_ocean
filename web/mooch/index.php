@@ -15,6 +15,7 @@ class DatabaseSettings {
 
             $servername = getenv('DATABASE_URL');
             $components = parse_url($servername);
+            var_dump($components);
             
             $this->host = $components['host'];
             $this->username = $components['user'];
@@ -33,6 +34,7 @@ class DatabaseSettings {
 
     public function databaseConnect() {
         $this->setDbVar();
+        
         try {
             $dbConn = new PDO("mysql:host=$this->servername:$this->port;dbname=$this->databaseName", $this->username, $this->password);
              // set the PDO error mode to exception
