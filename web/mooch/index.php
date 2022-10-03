@@ -90,6 +90,7 @@ class DatabaseSettings {
     public function test() {
         $this->setDbVar();
         echo $this->servername;
+        echo $this->host;
     }
 
     
