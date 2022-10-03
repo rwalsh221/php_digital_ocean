@@ -15,7 +15,7 @@ class DatabaseSettings {
 
             $servername = getenv('DATABASE_URL');
             $components = parse_url($servername);
-            var_dump($components);
+            // var_dump($components);
             
             $this->servername = $components['host'];
             $this->username = $components['user'];
