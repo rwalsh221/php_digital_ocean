@@ -8,8 +8,15 @@ class DatabaseSettings {
     private $port;
 
     private function setDbVar() {
-        if (getenv('DATABASE_URL')) {
-
+        $prodDbUrl = getenv('DATABASE_URL');
+        if ($prodDbUrl === false) {
+            
+            $this->servername = 'localhost';
+            $this->databaseName = 'mooch';
+            $this->username = 'richardmsi';
+            $this->password = 'Polly11@Polly11';
+            $this->port = 3306;
+        } else {
             $servername = getenv('DATABASE_URL');
             $components = parse_url($servername);
             // var_dump($components);
@@ -20,12 +27,7 @@ class DatabaseSettings {
             $this->databaseName = substr($components['path'], 1);
             $this->port = $components['port'];
 
-        } else {
-            $this->servername = 'localhost';
-            $this->databaseName = 'mooch';
-            $this->username = 'richardmsi';
-            $this->password = 'Polly11@Polly11';
-            $this->port = 80;
+           
         }
     }
 
