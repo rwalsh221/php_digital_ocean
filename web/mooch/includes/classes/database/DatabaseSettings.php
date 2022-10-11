@@ -33,6 +33,7 @@ class DatabaseSettings {
 
     public function databaseConnect() {
         $this->setDbVar();
+        
         try {
             $dbConn = new PDO("mysql:host=$this->servername:$this->port;dbname=$this->databaseName", $this->username, $this->password);
              // set the PDO error mode to exception
@@ -46,6 +47,8 @@ class DatabaseSettings {
 
     protected function getFromDatabase($sql) {
         $this->setDbVar();
+       
+
         try {
             $dbConn = new PDO("mysql:host=$this->servername:$this->port;dbname=$this->databaseName", $this->username, $this->password);
              // set the PDO error mode to exception
