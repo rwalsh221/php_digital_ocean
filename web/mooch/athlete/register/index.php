@@ -21,7 +21,6 @@ $body = file_get_contents('php://input');
 
 $signUpData = json_decode($body, true);
 
-echo json_last_error_msg();
 if($signUpData === null) {
     echo 'signupdata null';
     http_response_code(400);        
