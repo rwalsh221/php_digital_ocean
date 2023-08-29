@@ -1,27 +1,61 @@
 <?php
+
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST");
+
 
 require dirname(__DIR__, 2) . '/includes/classes/database/DatabaseAthlete.php';
 require dirname(__DIR__, 2) . '/includes/classes/curl/CurlAthleteStats.php';
+require dirname(__DIR__, 2) . '/includes/classes/curl/CurlAthleteNewAuthToken.php';
+require dirname(__DIR__, 2) . '/includes/classes/curl/CurlAthlete.php';
 
-$body = file_get_contents('php://input');
-$data = json_decode($body, true);
+
 
 $databaseAthlete = new DatabaseAthlete();
+$curlAthleteNewAuthToken = new CurlAthleteNewAuthToken();
 
-$databaseAthlete->registerAthlete($data['userId'] ,$data['email'] ,$data['athlete']['id'], $data['athlete']['firstname'],$data['athlete']['lastname'], $data['athlete']['profile_medium'], 
-$data['expires_at'], $data['expires_in'], $data['clientId'], $data['clientSecret'], $data['access_token'], $data['refresh_token']);
 
-$getAthleteStats = new CurlAthleteStats('athletes/' . $data['athlete']['id'] . '/stats', array(
-    'Content-Type: application/json', 'Authorization: Bearer ' . $data['access_token']));
+// 1, receive  user UID, client secret, client id, access token, refresh token and email from front end. = $signUpData
 
-$athleteStats = $getAthleteStats->getAthleteStats();
-echo json_encode($athleteStats);
+$body = file_get_contents('php://input');
 
-$databaseAthlete->insertAthleteStats($data['userId'], $athleteStats);
-// $databaseAthlete->test($data['userId'], $athleteStats);
+$signUpData = json_decode($body, true);
 
-// $initRegisterAthlete->registerAthlete('test1','test2','test3','test4',1,2,'test7','test8',)
+echo json_last_error_msg();
+if($signUpData === null) {
+    echo 'signupdata null';
+    http_response_code(400);        
+    exit;
+}
 
-// echo json_encode($data['athlete']['firstname']);
+// 2, request refresh token from strava to get token exipres_in and expires_at. = $tokenData
+
+$getTokenExpires = $curlAthleteNewAuthToken->getNewAuthToken($signUpData['clientId'], $signUpData['clientSecret'],$signUpData['refreshToken']);
+
+$tokenExpiresAt = $getTokenExpires['expires_at'];
+$tokenExpiresIn = $getTokenExpires['expires_in'];
+
+// 3, request athlete info from strava to get athleteID, first and last name, profile img, = $athleteProfileData
+$curlAthlete = new CurlAthlete('athlete', ["Authorization: Bearer {$signUpData['accessToken']}"]);
+$athleteProfileData = $curlAthlete->getAthlete();
+
+// 4 send curl request to get ATHLETE STATS FROM STRAVA. = $athleteStatsData
+
+$curlAthleteStats = new CurlAthleteStats('athletes/' . $athleteProfileData['id'] . '/stats', array(
+    'Content-Type: application/json', 'Authorization: Bearer ' . $signUpData['accessToken']));
+
+$athleteStatsData = $curlAthleteStats->getAthleteStats();
+
+
+$databaseAthlete->registerAthlete($signUpData['uid'] ,$signUpData['email'] ,$athleteProfileData['id'], $athleteProfileData['firstname'], $athleteProfileData['lastname'], 
+$athleteProfileData['profile_medium'], $tokenExpiresAt, $tokenExpiresIn, $signUpData['clientId'], $signUpData['clientSecret'], $signUpData['accessToken'], $signUpData['refreshToken']);
+
+
+
+
+// echo json_encode($athleteStats);
+
+$databaseAthlete->insertAthleteStats($signUpData['uid'], $athleteStatsData);
+http_response_code(200);
+
 ?>
