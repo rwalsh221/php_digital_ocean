@@ -10,20 +10,23 @@ class CurlAthlete extends CurlSettings {
         // var_dump($stravaApiCall);
         $stravaApiCallDecode = json_decode($stravaApiCall, true);
         $stravaApiCallDecodeKeys = array_keys($stravaApiCallDecode);
-
+        // var_dump($stravaApiCallDecode);
         foreach($stravaApiCallDecodeKeys as $key) {
             if($key === 'firstname' 
             || $key === 'lastname' 
-            || $key === 'profile_medium') {
+            || $key === 'profile_medium'
+            || $key === 'id') {
                 $this->athleteInfo[$key] = $stravaApiCallDecode[$key];
             }
         };
-        echo json_encode($this->athleteInfo, JSON_UNESCAPED_SLASHES);
+        return $this->athleteInfo;
     }
 
     public function getAthlete() {
         
-        $this->setAthleteInfo();
+        return $this->setAthleteInfo();
     }
+
+   
 }
 ?>
