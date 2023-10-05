@@ -9,16 +9,20 @@ class DatabaseSegments extends DatabaseSettings {
 
     }
 
+    // ADD USER IMG HERE
     public function updateUserSegmentTime($segmentId, $userId, $segmentTime) {
+        $userImgSql = "SELECT profileImgUrl from athlete WHERE userId='$userId'";
         $sql = "SELECT segmentTime from segmentTimes WHERE segmentId='$segmentId' AND userId='$userId'";
 
+        $userImgResult =$this->getFromDatabase($userImgSql);
         $result = $this->getFromDatabase($sql);
         // var_dump($result[0]['segmentTime']);
+        $userImg = $userImgResult[0]['profileImgUrl'];
     
         if(empty($result)) {
             // INSERT INTO
-            $sql = "INSERT INTO segmentTimes (userId, segmentId, segmentTime)
-            VALUES ('$userId', '$segmentId', '$segmentTime')";
+            $sql = "INSERT INTO segmentTimes (userId, segmentId, segmentTime, profileImgUrl)
+            VALUES ('$userId', '$segmentId', '$segmentTime', '$userImg')";
 
             $this->insertIntoDatabase($sql);
 
@@ -83,18 +87,21 @@ class DatabaseSegments extends DatabaseSettings {
             
         $segmentId = $athleteSegmentsKey[0]['segmentId'];
         // var_dump($segmentId);
-        $sql = "SELECT segmentTime, userId FROM segmentTimes WHERE segmentId = '$segmentId' ORDER BY segmentTime ASC";
+        $sql = "SELECT segmentTime, userId, profileImgUrl FROM segmentTimes WHERE segmentId = '$segmentId' ORDER BY segmentTime ASC";
 
         $segmentTimes = $this->getFromDatabase($sql);
             // var_dump($segmentTimes);
             foreach($segmentTimes as $segmentTimesKey) {
                 
                 $time = $segmentTimesKey['segmentTime'];
+                $profileImgUrl= $segmentTimesKey['profileImgUrl'];
                 $userId = $segmentTimesKey['userId'];
                 $name = $this->getAthleteName($segmentTimesKey['userId'])[0]['firstName']; // METHOD RETURNS ARRAY FROM DB
                 
                 $segmentTimesArray["$segmentId"]["$userId"]["name"]=$name;
                 $segmentTimesArray["$segmentId"]["$userId"]["time"]=$time;
+                $segmentTimesArray["$segmentId"]["$userId"]["img"]=$profileImgUrl;
+
                 
             }
         

@@ -88,13 +88,13 @@ class DatabaseAthlete extends DatabaseSettings {
 
     }
 
-    // public function test($userId, $athleteStats) {
-    //     ['all_ride_totals'=>$all_ride_totals, 'ytd_ride_totals'=>$ytd_ride_totals,
-    //     'all_run_totals'=>$all_run_totals, 'ytd_run_totals'=>$ytd_run_totals,
-    //     'all_swim_totals'=>$all_swim_totals, 'ytd_swim_totals'=>$ytd_swim_totals] = $athleteStats;
-    //     echo json_encode($all_ride_totals);
+    public function test($userId, $athleteStats) {
+        ['all_ride_totals'=>$all_ride_totals, 'ytd_ride_totals'=>$ytd_ride_totals,
+        'all_run_totals'=>$all_run_totals, 'ytd_run_totals'=>$ytd_run_totals,
+        'all_swim_totals'=>$all_swim_totals, 'ytd_swim_totals'=>$ytd_swim_totals] = $athleteStats;
+        echo json_encode($all_ride_totals);
 
-    // }
+    }
 
     public function getAccessToken ($userId) {
         $accessToken = $this->getOneColum('athlete', 'accessToken', $userId);
